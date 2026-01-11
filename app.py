@@ -148,31 +148,22 @@ else:
 
 profile_url = f"https://www.instagram.com/{req.username}"
 
-st.markdown(
-    f'''
-    <a href="{profile_url}" target="_blank">
-        <button style="padding:8px 16px;font-size:16px;">
-            Open Instagram Profile (New Tab)
-        </button>
-    </a>
-    ''',
-    unsafe_allow_html=True,
-)
-
-st.caption(
-    "Links open in your browser. Please return here to confirm before continuing."
-)
-
-if st.button("I have opened this profile"):
+if st.button("Open Instagram Profile (New Tab)"):
     opened_ok = mark_profile_opened(session)
     save_session(session, SESSION_FILE)
 
     if not opened_ok:
         st.warning("Please wait before opening again.")
     else:
+        st.markdown(
+            f'''
+            <script>
+                window.open("{profile_url}", "_blank");
+            </script>
+            ''',
+            unsafe_allow_html=True,
+        )
         st.rerun()
-
-
 
 # Action Buttons (STRICTLY ENFORCED)
 col1, col2 = st.columns(2)
@@ -219,5 +210,6 @@ if st.button("Stop for now"):
     save_session(session, SESSION_FILE)
     st.info("Progress saved. You can safely resume later.")
     st.stop()
+
 
 
