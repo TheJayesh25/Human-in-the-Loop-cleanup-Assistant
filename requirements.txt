@@ -1,2 +1,2 @@
-Python >= 3.9 recommended
+Python>=3.9
 streamlit>=1.30
