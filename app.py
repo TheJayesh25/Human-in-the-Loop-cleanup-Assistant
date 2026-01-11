@@ -10,7 +10,7 @@ from workflow.engine import (
     mark_skipped,
     has_more,
 )
-from workflow.browser import open_current_profile
+from workflow.browser import mark_profile_opened
 
 
 # Streamlit config
@@ -145,14 +145,33 @@ else:
 
 
 # Open Profile
-if st.button("Open Instagram Profile (New Tab)"):
-    opened_ok = open_current_profile(session)
+
+profile_url = f"https://www.instagram.com/{req.username}"
+
+st.markdown(
+    f'''
+    <a href="{profile_url}" target="_blank">
+        <button style="padding:8px 16px;font-size:16px;">
+            Open Instagram Profile (New Tab)
+        </button>
+    </a>
+    ''',
+    unsafe_allow_html=True,
+)
+
+st.caption(
+    "Links open in your browser. Please return here to confirm before continuing."
+)
+
+if st.button("I have opened this profile"):
+    opened_ok = mark_profile_opened(session)
     save_session(session, SESSION_FILE)
 
     if not opened_ok:
         st.warning("Please wait before opening again.")
     else:
         st.rerun()
+
 
 
 # Action Buttons (STRICTLY ENFORCED)
@@ -170,7 +189,7 @@ with col1:
 
         # AUTO-ADVANCE (GUIDED MODE)
         if st.session_state.auto_advance and has_more(session):
-            open_current_profile(session)
+            mark_profile_opened(session)
             save_session(session, SESSION_FILE)
 
         st.rerun()
@@ -187,7 +206,7 @@ with col2:
 
         # AUTO-ADVANCE (GUIDED MODE)
         if st.session_state.auto_advance and has_more(session):
-            open_current_profile(session)
+            mark_profile_opened(session)
             save_session(session, SESSION_FILE)
 
         st.rerun()
@@ -200,4 +219,5 @@ if st.button("Stop for now"):
     save_session(session, SESSION_FILE)
     st.info("Progress saved. You can safely resume later.")
     st.stop()
+
 
