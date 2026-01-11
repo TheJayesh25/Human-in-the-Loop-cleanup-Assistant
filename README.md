@@ -197,6 +197,32 @@ These are not shortcomings — they are **guardrails**.
 
 ---
 
+### REPO Structure
+```
+human-in-the-loop-cleanup-assistant/
+│
+├── app.py                         # Streamlit entrypoint
+├── README.md
+├── requirements.txt
+├── .gitignore
+│
+├── workflow/                      # Core workflow logic
+│   ├── __init__.py
+│   ├── models.py                  # Data models (PendingRequest, RequestState)
+│   ├── parser.py                  # Instagram export parsing
+│   ├── session.py                 # SessionState + persistence
+│   ├── engine.py                  # Workflow invariants & transitions
+│   └── browser.py                 # Safe browser orchestration
+│
+├── data/
+│   └── pending_follow_requests.sample.json
+│
+└── scripts/
+    └── generate_sample_pending_requests.py
+```
+
+---
+
 ## License
 
 This project is shared for educational and portfolio purposes only.
