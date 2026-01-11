@@ -193,6 +193,10 @@ These are not shortcomings — they are **guardrails**.
 
 ---
 
+## NOTE - This repository includes a synthetic sample Instagram export with fictional usernames for demonstration purposes only.
+
+---
+
 ## License
 
 This project is shared for educational and portfolio purposes only.
