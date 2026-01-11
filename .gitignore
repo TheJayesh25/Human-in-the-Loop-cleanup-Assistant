@@ -1,0 +1,37 @@
+# -------------------------
+# Python cache / artifacts
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+
+# -------------------------
+# Virtual environments
+# -------------------------
+.venv/
+venv/
+env/
+
+# -------------------------
+# Streamlit
+# -------------------------
+.streamlit/
+session_state.json
+uploaded_pending_requests.json
+
+# -------------------------
+# OS-specific
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Editor / IDE
+# -------------------------
+.vscode/
+.idea/
+
+# -------------------------
+# Logs (if added later)
+# -------------------------
+*.log
