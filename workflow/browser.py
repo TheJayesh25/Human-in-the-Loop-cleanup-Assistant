@@ -1,11 +1,9 @@
-import webbrowser
-import time
 from datetime import datetime, timezone
-
 from workflow.engine import get_current_request
 from workflow.session import SessionState
 
 MIN_SECONDS_BETWEEN_OPENS = 8
+
 
 def _can_open(last_opened_at):
     if last_opened_at is None:
@@ -18,26 +16,20 @@ def _can_open(last_opened_at):
     return elapsed >= MIN_SECONDS_BETWEEN_OPENS
 
 
-def open_current_profile(session: SessionState) -> bool:
+def get_current_profile_url(session: SessionState) -> str | None:
     if session is None:
-        return False
+        return None
 
     request = get_current_request(session)
     if request is None:
-        return False
+        return None
 
     if not _can_open(request.last_opened_at):
-        return False
+        return None
 
-    url = f"https://www.instagram.com/{request.username}"
-
-    # Open the browser tab (do NOT trust return value)
-    webbrowser.open_new_tab(url)
-
-    # Record intent immediately
+    # Record intent immediately (human will click)
     now = datetime.now(timezone.utc)
     request.last_opened_at = now
     session.last_updated_at = now
 
-    return True
-
+    return f"https://www.instagram.com/{request.username}"
