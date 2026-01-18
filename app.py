@@ -12,9 +12,8 @@ from workflow.engine import (
 )
 from workflow.browser import open_current_profile
 
-# --------------------------------------------------
+
 # Streamlit config
-# --------------------------------------------------
 st.set_page_config(
     page_title="Instagram Pending Request Cleanup",
     layout="centered",
@@ -22,9 +21,8 @@ st.set_page_config(
 
 SESSION_FILE = Path("session_state.json")
 
-# --------------------------------------------------
+
 # Initialize Streamlit state
-# --------------------------------------------------
 if "session" not in st.session_state:
     st.session_state.session = None
 
@@ -44,9 +42,8 @@ if "uploader_key" not in st.session_state:
 
 st.title("Instagram Pending Follow Request Cleanup")
 
-# --------------------------------------------------
+
 # STOPPED SCREEN (renders first if active)
-# --------------------------------------------------
 if st.session_state.app_phase == "STOPPED":
     st.subheader("Session paused")
 
@@ -75,9 +72,8 @@ if st.session_state.app_phase == "STOPPED":
 
     st.stop()
 
-# --------------------------------------------------
+
 # Upload (ONLY in INIT phase)
-# --------------------------------------------------
 uploaded_file = st.file_uploader(
     "Upload pending_follow_requests.json",
     type=["json"],
@@ -97,18 +93,16 @@ if uploaded_file and st.session_state.app_phase == "INIT":
     st.session_state.app_phase = "RUNNING"
     st.rerun()
 
-# --------------------------------------------------
-# HARD GUARD — no workflow without session
-# --------------------------------------------------
+
+# HARD GUARD - no workflow without session
 session = st.session_state.session
 
 if session is None:
     st.info("Upload your Instagram pending_follow_requests.json file to begin.")
     st.stop()
 
-# --------------------------------------------------
-# Sidebar (Progress View) — MUST be here
-# --------------------------------------------------
+
+# Sidebar (Progress View) - MUST be here
 with st.sidebar:
     st.header("Progress")
 
@@ -143,9 +137,8 @@ with st.sidebar:
 
         st.text(f"{prefix} @{username}")
 
-# --------------------------------------------------
+
 # MODE SELECTION (ONCE PER SESSION)
-# --------------------------------------------------
 if not st.session_state.mode_selected:
     st.subheader("Choose Workflow Mode")
 
@@ -170,9 +163,8 @@ if not st.session_state.mode_selected:
 
     st.stop()
 
-# --------------------------------------------------
+
 # Completion Check
-# --------------------------------------------------
 if not has_more(session):
     st.success("All pending follow requests processed.")
 
@@ -187,9 +179,8 @@ if not has_more(session):
 
     st.stop()
 
-# --------------------------------------------------
+
 # Active Request UI
-# --------------------------------------------------
 req = get_current_request(session)
 
 st.subheader("Current Request")
@@ -198,13 +189,12 @@ st.write(f"**Username:** @{req.username}")
 opened = req.last_opened_at is not None
 
 if opened:
-    st.success("Profile opened — complete the action on Instagram, then continue.")
+    st.success("Profile opened - complete the action on Instagram, then continue.")
 else:
     st.info("Open the Instagram profile to proceed.")
 
-# --------------------------------------------------
+
 # Open Profile
-# --------------------------------------------------
 if st.button("Open Instagram Profile (New Tab)"):
     opened_ok = open_current_profile(session)
     save_session(session, SESSION_FILE)
@@ -214,9 +204,8 @@ if st.button("Open Instagram Profile (New Tab)"):
     else:
         st.rerun()
 
-# --------------------------------------------------
+
 # Action Buttons (STRICTLY ENFORCED)
-# --------------------------------------------------
 col1, col2 = st.columns(2)
 
 with col1:
@@ -241,9 +230,8 @@ with col2:
 
         st.rerun()
 
-# --------------------------------------------------
+
 # Stop / Save → transition to STOPPED
-# --------------------------------------------------
 st.divider()
 
 if st.button("Stop for now"):
