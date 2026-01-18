@@ -1,6 +1,7 @@
 import streamlit as st
 import uuid
 from pathlib import Path
+from datetime import datetime, timezone
 
 from workflow.parser import parse_pending_follow_requests
 from workflow.session import initialize_session, save_session, load_session
@@ -34,9 +35,11 @@ if "auto_advance" not in st.session_state:
 if "mode_selected" not in st.session_state:
     st.session_state.mode_selected = False
 
+# App phases: INIT | RUNNING | STOPPED
 if "app_phase" not in st.session_state:
     st.session_state.app_phase = "INIT"
 
+# Resettable uploader
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = str(uuid.uuid4())
 
@@ -76,11 +79,13 @@ if st.session_state.app_phase == "STOPPED":
 # --------------------------------------------------
 # Upload (INIT only)
 # --------------------------------------------------
-uploaded_file = st.file_uploader(
-    "Upload pending_follow_requests.json",
-    type=["json"],
-    key=st.session_state.uploader_key,
-)
+uploaded_file = None
+if st.session_state.app_phase == "INIT":
+    uploaded_file = st.file_uploader(
+        "Upload pending_follow_requests.json",
+        type=["json"],
+        key=st.session_state.uploader_key,
+    )
 
 if uploaded_file and st.session_state.app_phase == "INIT":
     temp_path = Path("uploaded_pending_requests.json")
@@ -104,7 +109,7 @@ if session is None:
     st.stop()
 
 # --------------------------------------------------
-# Sidebar (Progress)
+# Sidebar (Progress View)
 # --------------------------------------------------
 with st.sidebar:
     st.header("Progress")
@@ -122,7 +127,16 @@ with st.sidebar:
 
     for idx, username in enumerate(session.order):
         state = session.requests[username]
-        prefix = "👉" if idx == session.current_index else "•"
+
+        if idx == session.current_index:
+            prefix = "👉"
+        elif state.status == "completed":
+            prefix = "✅"
+        elif state.status == "skipped":
+            prefix = "⏭"
+        else:
+            prefix = "•"
+
         st.text(f"{prefix} @{username}")
 
 # --------------------------------------------------
@@ -130,6 +144,11 @@ with st.sidebar:
 # --------------------------------------------------
 if not st.session_state.mode_selected:
     st.subheader("Choose Workflow Mode")
+
+    st.write(
+        "You can either manually open each profile, or let the app "
+        "automatically advance after confirmation."
+    )
 
     col1, col2 = st.columns(2)
 
@@ -140,7 +159,7 @@ if not st.session_state.mode_selected:
             st.rerun()
 
     with col2:
-        if st.button("Guided Mode (Auto-open next)"):
+        if st.button("Guided Mode"):
             st.session_state.auto_advance = True
             st.session_state.mode_selected = True
             st.rerun()
@@ -165,27 +184,33 @@ st.write(f"**Username:** @{req.username}")
 opened = req.last_opened_at is not None
 
 if opened:
-    st.success("Profile link generated — open it in a new tab.")
+    st.success("Profile confirmed as opened. You may proceed.")
 else:
-    st.info("Generate the Instagram profile link to proceed.")
+    st.info("Open the profile and confirm before continuing.")
 
 # --------------------------------------------------
-# Open Profile (LINK-BASED)
+# Open Profile (Human-confirmed)
 # --------------------------------------------------
 profile_url = get_current_profile_url(session)
 
 if profile_url:
     st.link_button(
-        "Open Instagram Profile",
+        "Open Instagram Profile (New Tab)",
         profile_url,
-        help="Opens in a new tab. You must be logged in to Instagram.",
+        help="You must already be logged in to Instagram.",
     )
-    save_session(session, SESSION_FILE)
+
+    if st.button("I've opened this profile"):
+        now = datetime.now(timezone.utc)
+        req.last_opened_at = now
+        session.last_updated_at = now
+        save_session(session, SESSION_FILE)
+        st.rerun()
 else:
     st.button("Open Instagram Profile", disabled=True)
 
 # --------------------------------------------------
-# Action Buttons
+# Action Buttons (STRICTLY ENFORCED)
 # --------------------------------------------------
 col1, col2 = st.columns(2)
 
@@ -202,7 +227,7 @@ with col2:
         st.rerun()
 
 # --------------------------------------------------
-# Stop
+# Stop / Save
 # --------------------------------------------------
 st.divider()
 
