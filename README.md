@@ -16,8 +16,9 @@
 - [Usage Requirements](#usage-requirements)
 - [Data Source](#data-source)
 - [UI Workflow](#ui-workflow)
+- [Sample Snapshots](#sample-snapshots)
 - [License](#license)
-
+  
 ---
 ---
 
@@ -339,6 +340,41 @@ A request cannot be completed or skipped unless its profile has been opened.
 Data Export → Session State → Profile Open → Human Action → Confirmation → Next Item
 
 At no point does the application automate interactions with Instagram; it only assists the user in managing workflow state.
+
+---
+---
+
+## Sample Snapshots
+
+---
+
+<img width="1162" height="885" alt="Screenshot 2026-01-18 220446" src="https://github.com/user-attachments/assets/cae65a3c-9505-4493-8a73-af04d2969dcb" />
+
+---
+
+<img width="1393" height="677" alt="Screenshot 2026-01-18 220614" src="https://github.com/user-attachments/assets/035c3b2c-3d77-4394-a33c-9d1074d83d75" />
+
+---
+
+<img width="1688" height="1021" alt="Screenshot 2026-01-18 220641" src="https://github.com/user-attachments/assets/b63e3dca-3476-48d0-af92-99d9888f3802" />
+
+---
+
+<img width="1631" height="1011" alt="Screenshot 2026-01-18 220657" src="https://github.com/user-attachments/assets/425ed085-06d4-426d-a420-f3fc265e2807" />
+
+---
+
+<img width="303" height="762" alt="Screenshot 2026-01-18 220733" src="https://github.com/user-attachments/assets/46a5e889-fd35-4cb7-bbfa-bdd4c361e1ef" />
+
+---
+
+<img width="1175" height="890" alt="Screenshot 2026-01-18 220745" src="https://github.com/user-attachments/assets/73ea03bd-bf35-4be6-9dcd-711d4a170825" />
+
+---
+
+![Screenshot 2026-01-18 220845](https://github.com/user-attachments/assets/bbbd4c0f-1f13-408e-915d-6ac6292122d1)
+---
+![Screenshot 2026-01-18 220855](https://github.com/user-attachments/assets/fd33c282-100f-4113-9a63-d8f278c2acf8)
 
 ---
 ---
